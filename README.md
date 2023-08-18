@@ -6,7 +6,7 @@ Code Quiz game with questions.
 
 The game doesn't work as intended but will display a timer starting at 60 seconds until it hits zero and the game ends. Getting a question incorrect will decrease your time by 10 seconds. Here is a screenshot.
 
-![Alt Text](Code-Quiz\assets\2023-08-17.png)
+![Alt Text](Code-Quiz\assets\images\quizgamesc.png)
 
 
 
