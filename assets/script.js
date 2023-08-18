@@ -60,3 +60,46 @@ const quizData = [
     
       displayQuestion();
     }
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+    
+      function displayQuestion() {
+        const questionData = quizData[currentQuestion];
+      
+        const questionElement = document.createElement('div');
+        questionElement.className = 'question';
+        questionElement.innerHTML = questionData.question;
+      
+        const optionsElement = document.createElement('div');
+        optionsElement.className = 'options';
+      
+        for (let i = 0; i < questionData.options.length; i++) {
+          const option = document.createElement('label');
+          option.className = 'option';
+      
+          const radio = document.createElement('input');
+          radio.type = 'radio';
+          radio.name = 'quiz';
+          radio.value = questionData.options[i];
+      
+          const optionText = document.createTextNode(questionData.options[i]);
+      
+          option.appendChild(radio);
+          option.appendChild(optionText);
+          optionsElement.appendChild(option);
+        }
+      
+        const submitButton = document.createElement('button');
+        submitButton.className = 'button';
+        submitButton.textContent = 'Submit';
+        submitButton.addEventListener('click', checkAnswer);
+      
+        quizContainer.innerHTML = '';
+        quizContainer.appendChild(questionElement);
+        quizContainer.appendChild(optionsElement);
+        quizContainer.appendChild(submitButton);
+      }
