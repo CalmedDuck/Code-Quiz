@@ -170,3 +170,34 @@ const quizData = [
         displayQuestion();
       }
       
+      
+  function showAnswer() {
+    clearInterval(countdown);
+    quizContainer.style.display = 'none';
+    submitButton.style.display = 'none';
+    retryButton.style.display = 'inline-block';
+    showAnswerButton.style.display = 'none';
+  
+    let incorrectAnswersHtml = '';
+    for (let i = 0; i < incorrectAnswers.length; i++) {
+      incorrectAnswersHtml += `
+        <p>
+          <strong>Question:</strong> ${incorrectAnswers[i].question}<br>
+          <strong>Your Answer:</strong> ${incorrectAnswers[i].incorrectAnswer}<br>
+          <strong>Correct Answer:</strong> ${incorrectAnswers[i].correctAnswer}
+        </p>
+      `;
+    }
+    resultContainer.innerHTML = `
+      <p>You scored ${score} out of ${quizData.length}!<br>Time left: ${timeLeft}</p>
+      <p>Incorrect Answers:</p>
+      ${incorrectAnswersHtml}
+    `;
+  }
+  
+  startButton.addEventListener('click', startQuiz);
+  submitButton.addEventListener('click', checkAnswer);
+  retryButton.addEventListener('click', retryQuiz);
+  showAnswerButton.addEventListener('click', showAnswer);
+
+  startQuiz();
