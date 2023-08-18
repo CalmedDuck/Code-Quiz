@@ -32,4 +32,31 @@ const quizData = [
 
     ];
 
+    const startButton = document.getElementById('start');
+    const quizContainer = document.getElementById('quiz');
+    const resultContainer = document.getElementById('result');
+    const submitButton = document.getElementById('submit');
+    const retryButton = document.getElementById('retry');
+    const showAnswerButton = document.getElementById('showAnswer');
+    let countdown;
+    let currentQuestion = 0;
+    let score = 0;
+    let timeLeft = 60;
+    let incorrectAnswers = [];
     
+    function startQuiz() {
+      startButton.style.display = 'none';
+    
+      countdown = setInterval(function() {
+        timeLeft--;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          timeLeft = 0;
+          displayResult();
+        } else {
+          document.getElementById('timer').textContent = `Time left: ${timeLeft} seconds`;
+        }
+      }, 1000);
+    
+      displayQuestion();
+    }
