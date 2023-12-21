@@ -1,203 +1,200 @@
-const quizData = [
-    {
-      question: 'Inside which HTML element do we put JavaScript?',
-      options: ['<scripting>', '<script>', '<javascript>', '<js>'],
-      answer: '<scripting>',
-    },
-    {
-      question: 'What is the correct place to insert a JavaScript?',
-      options: ['The <body> section', 'Both the <head> section and the <body> section are correct', 'The <head> section', 'Neptune'],
-      answer: 'Both the <head> section and the <body> section are correct',
-    },
-    {
-      question: 'How do you call a function named myFunction?',
-      options: ['myFunction()', 'call function myFunction()', 'call myFunction()', 'Argentina'],
-      answer: 'myFunction()',
-    },
-    {
-      question: 'How does a WHILE loop start?',
-      options: ['while (i <= 10)', 'while i = 1 to 10', 'while (i <= 10, i++', 'Idk'],
-      answer: 'while (i <= 10)',
-    },
-    {
-      question: 'Which is the largest ocean on Earth?',
-      options: [
-        'Pacific Ocean',
-        'Indian Ocean',
-        'Atlantic Ocean',
-        'Arctic Ocean',
-      ],
-      answer: 'Pacific Ocean',
-    },
+document.getElementById('start-btn').addEventListener('click', startGame);
+let currentQuestionIndex, questionsShuffled, timer;
+const questionContainerElement = document.getElementById('question-container');
+const questionElement = document.getElementById('question');
+const answerButtonsElement = document.getElementById('answer-buttons');
+const timerElement = document.getElementById('time');
+const endScreenElement = document.getElementById('end-screen');
+const finalScoreElement = document.getElementById('final-score');
 
-    ];
+function startGame() {
+    document.getElementById('start-btn').classList.add('hide');
+    questionsShuffled = questions.sort(() => Math.random() - .5);
+    currentQuestionIndex = 0;
+    questionContainerElement.classList.remove('hide');
+    timer = 60; // Set timer (in seconds)
+    startTimer();
+    setNextQuestion();
+}
 
-    const startButton = document.getElementById('start');
-    const quizContainer = document.getElementById('quiz');
-    const resultContainer = document.getElementById('result');
-    const submitButton = document.getElementById('submit');
-    const retryButton = document.getElementById('retry');
-    const showAnswerButton = document.getElementById('showAnswer');
-    let countdown;
-    let currentQuestion = 0;
-    let score = 0;
-    let timeLeft = 60;
-    let incorrectAnswers = [];
-    
-    function startQuiz() {
-      startButton.style.display = 'none';
-    
-      countdown = setInterval(function() {
-        timeLeft--;
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
-          timeLeft = 0;
-          displayResult();
-        } else {
-          document.getElementById('timer').textContent = `Time left: ${timeLeft} seconds`;
+function startTimer() {
+    const timerId = setInterval(() => {
+        timer--;
+        timerElement.textContent = timer;
+        if (timer <= 0 || currentQuestionIndex >= questions.length) {
+            clearInterval(timerId);
+            endGame();
         }
-      }, 1000);
-    
-      displayQuestion();
+    }, 1000);
+}
+
+function setNextQuestion() {
+    resetState();
+    showQuestion(questionsShuffled[currentQuestionIndex]);
+}
+
+function showQuestion(question) {
+    questionElement.textContent = question.question;
+    question.answers.forEach(answer => {
+        const button = document.createElement('button');
+        button.innerText = answer.text;
+        button.classList.add('bg-blue-500', 'hover:bg-blue-700', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded', 'focus:outline-none', 'focus:shadow-outline');
+        if (answer.correct) {
+            button.dataset.correct = answer.correct;
+        }
+        button.addEventListener('click', selectAnswer);
+        answerButtonsElement.appendChild(button);
+    });
+}
+
+function resetState() {
+    while (answerButtonsElement.firstChild) {
+        answerButtonsElement.removeChild(answerButtonsElement.firstChild);
     }
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-      }
-    
-      function displayQuestion() {
-        const questionData = quizData[currentQuestion];
-      
-        const questionElement = document.createElement('div');
-        questionElement.className = 'question';
-        questionElement.innerHTML = questionData.question;
-      
-        const optionsElement = document.createElement('div');
-        optionsElement.className = 'options';
-      
-        for (let i = 0; i < questionData.options.length; i++) {
-          const option = document.createElement('label');
-          option.className = 'option';
-      
-          const radio = document.createElement('input');
-          radio.type = 'radio';
-          radio.name = 'quiz';
-          radio.value = questionData.options[i];
-      
-          const optionText = document.createTextNode(questionData.options[i]);
-      
-          option.appendChild(radio);
-          option.appendChild(optionText);
-          optionsElement.appendChild(option);
-        }
-      
-        const submitButton = document.createElement('button');
-        submitButton.className = 'button';
-        submitButton.textContent = 'Submit';
-        submitButton.addEventListener('click', checkAnswer);
-      
-        quizContainer.innerHTML = '';
-        quizContainer.appendChild(questionElement);
-        quizContainer.appendChild(optionsElement);
-        quizContainer.appendChild(submitButton);
-      }
+}
 
-      function checkAnswer() {
-        const selectedOption = document.querySelector('input[name="quiz"]:checked');
-        if (selectedOption) {
-          const answer = selectedOption.value;
-          if (answer === quizData[currentQuestion].answer) {
-            score++;
-          } else {
-            incorrectAnswers.push({
-              question: quizData[currentQuestion].question,
-              incorrectAnswer: answer,
-              correctAnswer: quizData[currentQuestion].answer,
-            });
-            timeLeft -= 10; // Subtract 10 seconds for incorrect answer
-          }
-          currentQuestion++;
-          selectedOption.checked = false;
-          if (currentQuestion < quizData.length) {
-            displayQuestion();
-          } else {
-            displayResult();
-          }
-        }
-      }
-      function displayResult() {
-        clearInterval(countdown);
-        quizContainer.style.display = 'none';
-        submitButton.style.display = 'none';
-        retryButton.style.display = 'inline-block';
-        showAnswerButton.style.display = 'inline-block';
-        
-        const initialsInput = document.createElement('input');
-        initialsInput.type = 'text';
-        initialsInput.id = 'initialsInput';
-        initialsInput.placeholder = 'Enter your initials';
-        
-        const highScoresButton = document.createElement('button');
-        highScoresButton.className = 'button';
-        highScoresButton.textContent = 'High Scores';
-        highScoresButton.id = 'highScores';
-        highScoresButton.addEventListener('click', displayHighScores);
-        
-        resultContainer.innerHTML = `You scored ${score} out of ${quizData.length}!<br>Time left: ${timeLeft}`;
-        resultContainer.appendChild(initialsInput);
-        resultContainer.appendChild(highScoresButton);
-      }
-      
-      function retryQuiz() {
-        clearInterval(countdown);
-        currentQuestion = 0;
-        score = 0;
-        timeLeft = 60; // Reset the timer
-        incorrectAnswers = [];
-        quizContainer.style.display = 'block';
-        submitButton.style.display = 'inline-block';
-        retryButton.style.display = 'none';
-        showAnswerButton.style.display = 'none';
-        
-        const initialsInput = document.getElementById('initialsInput');
-        if (initialsInput) {
-          initialsInput.value = ''; // Reset initials input
-        }
-        
-        resultContainer.innerHTML = '';
-        displayQuestion();
-      }
-      
-      
-  function showAnswer() {
-    clearInterval(countdown);
-    quizContainer.style.display = 'none';
-    submitButton.style.display = 'none';
-    retryButton.style.display = 'inline-block';
-    showAnswerButton.style.display = 'none';
-  
-    let incorrectAnswersHtml = '';
-    for (let i = 0; i < incorrectAnswers.length; i++) {
-      incorrectAnswersHtml += `
-        <p>
-          <strong>Question:</strong> ${incorrectAnswers[i].question}<br>
-          <strong>Your Answer:</strong> ${incorrectAnswers[i].incorrectAnswer}<br>
-          <strong>Correct Answer:</strong> ${incorrectAnswers[i].correctAnswer}
-        </p>
-      `;
+function selectAnswer(e) {
+    const selectedButton = e.target;
+    const correct = selectedButton.dataset.correct;
+    if (!correct) {
+        timer -= 10; // Subtract time for wrong answers
     }
-    resultContainer.innerHTML = `
-      <p>You scored ${score} out of ${quizData.length}!<br>Time left: ${timeLeft}</p>
-      <p>Incorrect Answers:</p>
-      ${incorrectAnswersHtml}
-    `;
-  }
-  
-  startButton.addEventListener('click', startQuiz);
-  submitButton.addEventListener('click', checkAnswer);
-  retryButton.addEventListener('click', retryQuiz);
-  showAnswerButton.addEventListener('click', showAnswer);
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        setNextQuestion();
+    } else {
+        endGame();
+    }
+}
 
-  startQuiz();
+function endGame() {
+    questionContainerElement.classList.add('hide');
+    endScreenElement.classList.remove('hide');
+    finalScoreElement.textContent = timer;
+    document.getElementById('save-score-btn').addEventListener('click', () => {
+        const initials = document.getElementById('initials').value;
+        const score = {
+            initials: initials,
+            score: timer
+        };
+        const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+        highScores.push(score);
+        localStorage.setItem('highScores', JSON.stringify(highScores));
+        window.location.href = 'scores.html'; 
+    });
+}
+
+
+function saveScore() {
+    const initials = document.getElementById('initials').value;
+    const score = {
+        initials: initials,
+        score: timer
+    };
+    const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+    highScores.push(score);
+    localStorage.setItem('highScores', JSON.stringify(highScores));
+}
+
+const questions = [
+    {
+        question: 'Inside which HTML element do we put JavaScript?',
+        answers: [
+            { text: '<scripting>', correct: false },
+            { text: '<script>', correct: true },
+            { text: '<javascript>', correct: false },
+            { text: '<js>', correct: false }
+        ]
+    },
+    {
+        question: 'What is the correct place to insert a JavaScript?',
+        answers: [
+            { text: 'The <body> section', correct: false },
+            { text: 'Both the <head> section and the <body> section are correct', correct: true },
+            { text: 'The <head> section', correct: false },
+            { text: 'Neptune', correct: false }
+        ]
+    },
+    {
+        question: 'How do you call a function named myFunction?',
+        answers: [
+            { text: 'myFunction()', correct: true },
+            { text: 'call function myFunction()', correct: false },
+            { text: 'call myFunction()', correct: false },
+            { text: 'Argentina', correct: false }
+        ]
+    },
+    {
+        question: 'How does a WHILE loop start?',
+        answers: [
+            { text: 'while (i <= 10)', correct: true },
+            { text: 'while i = 1 to 10', correct: false },
+            { text: 'while (i <= 10, i++)', correct: false },
+            { text: 'Idk', correct: false }
+        ]
+    },
+    {
+        question: 'Which of the following is used to parse a string to an int in JavaScript?',
+        answers: [
+            { text: 'Integer.parse()', correct: false },
+            { text: 'parseInt()', correct: true },
+            { text: 'parse.Int()', correct: false },
+            { text: 'toInt()', correct: false }
+        ]
+    },
+    {
+        question: 'What does HTML stand for?',
+        answers: [
+            { text: 'Hyper Trainer Marking Language', correct: false },
+            { text: 'Hyper Text Markup Language', correct: true },
+            { text: 'Hyper Texts Markup Language', correct: false },
+            { text: 'Hyper Text Markup Leveler', correct: false }
+        ]
+    },
+    {
+        question: 'Which symbol is used for comments in JavaScript?',
+        answers: [
+            { text: '//', correct: true },
+            { text: '/* */', correct: false },
+            { text: '<!-- -->', correct: false },
+            { text: '#', correct: false }
+        ]
+    },
+    {
+        question: 'Which of the following is a JavaScript framework?',
+        answers: [
+            { text: 'React', correct: true },
+            { text: 'Laravel', correct: false },
+            { text: 'Django', correct: false },
+            { text: 'Ruby on Rails', correct: false }
+        ]
+    },
+    {
+        question: 'Which HTML attribute is used to define inline styles?',
+        answers: [
+            { text: 'font', correct: false },
+            { text: 'style', correct: true },
+            { text: 'styles', correct: false },
+            { text: 'class', correct: false }
+        ]
+    },
+    {
+        question: 'In CSS, what does "h1 {color: red;}" change?',
+        answers: [
+            { text: 'The background color of all <h1> elements', correct: false },
+            { text: 'The text color of all <h1> elements', correct: true },
+            { text: 'The size of all <h1> elements', correct: false },
+            { text: 'The alignment of all <h1> elements', correct: false }
+        ]
+    },
+    {
+        question: 'What does "var" stand for in JavaScript?',
+        answers: [
+            { text: 'Variant', correct: false },
+            { text: 'Variable', correct: true },
+            { text: 'Variance', correct: false },
+            { text: 'Variety', correct: false }
+        ]
+    }
+
+];

@@ -1,21 +1,15 @@
 # Code-Quiz
-Code Quiz game with questions.
 
+Code Quiz game with questions.
 
 # Description
 
-The game doesn't work as intended but will display a timer starting at 60 seconds until it hits zero and the game ends. Getting a question incorrect will decrease your time by 10 seconds. Here is a screenshot.
+Game is now functional with a few questions. Answer the questions to progress or until the timer runs out and save your score with your initials then play again.
 
-![Alt Text](Code-Quiz\assets\images\quizgamesc.png)
-
-
-
+![Alt Text](assets\images\screenshot.png)
 
 # Credits
 
-Basic starter code was used from 
-https://www.codewithfaraz.com/content/161/build-a-quiz-application-with-html-css-and-javascript-step-by-step-guide#html-code
-
-All further edits were done by me. The questions were used from W3Schools.
+The questions were used from W3Schools.
 
 https://www.w3schools.com/quiztest/quiztest.asp?qtest=JS

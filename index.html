@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>JavaScript Quiz App</title>
-  <link rel="stylesheet" href="assets/style.css">
+    <title>Quiz Game</title>
+    <link rel="stylesheet" type="text/css" href="./assets/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
 </head>
 <body>
-    <div class="container">
-        <h1>Quiz App <span id="timer">(60 seconds)</span></h1>
-        <button id="start" class="button">Start Quiz</button> 
-        <div id="quiz"></div>
-        <div id="result" class="result"></div>
-        <button id="submit" class="button hide">Submit</button>
-        <button id="retry" class="button hide">Retry</button>
-        <button id="showAnswer" class="button hide">Show Answer</button>
-      </div>
-  <script src="assets/script.js"></script>
-  <script src="assets/script.js"></script>
+    <div id="quiz-container" class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold mb-4 text-center text-blue-600">Quiz Game</h1>
+        <button id="start-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Start Quiz</button>
+        <div id="question-container" class="container mx-auto p-4 mt-4 bg-white shadow-lg rounded-lg">
+            <div id="question" class="text-lg font-semibold mb-4"></div>
+            <div id="answer-buttons" class="flex flex-col space-y-2">
+               
+            </div>
+        </div>
+        <div id="timer">Time: <span id="time">60</span> seconds</div>
+        <div id="end-screen" class="hide">
+            <h2>Game Over</h2>
+            <div id="score">Your score: <span id="final-score"></span></div>
+            <input type="text" id="initials" placeholder="Enter Initials">
+            <button id="save-score-btn">Save Score</button>
+        </div>
+    </div>
+    <script src="./assets/script.js"></script>
 </body>
 </html>
